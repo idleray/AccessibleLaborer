@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">活动劳工</string>
+    <string name="accessibility_service_description">乱点乱点</string>
+    <string name="turn_on_error_toast"><![CDATA[遇到一些问题,请手动打开系统设置>无障碍服务>活动劳工]]></string>
+</resources>
