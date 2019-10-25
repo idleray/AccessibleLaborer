@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity(), AccessibilityManager.AccessibilityStat
         setContentView(R.layout.activity_main)
         accessibilityManager = getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         accessibilityManager.addAccessibilityStateChangeListener(this)
-        updateServiceStatus()
         start.setOnClickListener{
             openAccessibility()
         }
@@ -34,6 +33,12 @@ class MainActivity : AppCompatActivity(), AccessibilityManager.AccessibilityStat
     override fun onResume() {
         super.onResume()
         updateServiceStatus()
+    }
+
+    override fun onDestroy() {
+        //移除监听服务
+        accessibilityManager.removeAccessibilityStateChangeListener(this)
+        super.onDestroy()
     }
 
     fun openAccessibility() {
@@ -59,7 +64,7 @@ class MainActivity : AppCompatActivity(), AccessibilityManager.AccessibilityStat
             AccessibilityServiceInfo.FEEDBACK_GENERIC
         )
         for (info in accessibilityServices) {
-            if (info.getId() == "$packageName/.services.HongbaoService") {
+            if (info.getId() == "$packageName/.MyAccessibilityService") {
                 return true
             }
         }
