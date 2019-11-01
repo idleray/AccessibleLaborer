@@ -1,9 +1,10 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/accessibility_service_description"
-    android:packageNames="com.taobao.taobao,com.jingdong.app.mall,org.chromium.webview_shell"
-    android:accessibilityEventTypes="typeAllMask"
+    android:packageNames="com.taobao.taobao,com.jingdong.app.mall,com.suning.mobile.ebuy,org.chromium.webview_shell"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault"
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="true"
     />
+
+<!--    android:accessibilityEventTypes="typeAllMask"-->

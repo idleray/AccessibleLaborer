@@ -8,13 +8,6 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import java.util.regex.Pattern
 
-enum class STATE {
-    IDLE,
-    HOME,
-    RETURN_HOME,
-    SHOP
-}
-
 class MyAccessibilityService: AccessibilityService() {
     var TAG = "common"
     var homeClassName = "com.taobao.browser.BrowserActivity"
@@ -61,9 +54,9 @@ class MyAccessibilityService: AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-//        Log.d("aa", event.toString())
-//        Log.d(TAG , rootInActiveWindow?.toString() ?: "no root")
-//        Log.d(TAG, "current state: $state")
+        Log.d("aa", event.toString())
+        Log.d(TAG , rootInActiveWindow?.toString() ?: "no root")
+        Log.d(TAG, "current state: $state")
         //"com.uc.webkit.ay"
 //        if(event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
 //            return
@@ -78,7 +71,7 @@ class MyAccessibilityService: AccessibilityService() {
             Log.e(TAG, "event.source is null")
             return
         }
-//        printSources(node, 0)
+        printSources(node, 0)
 
 //        if(event.packageName == JD_PKG) {
 //            onJdEvent(event)
@@ -96,7 +89,7 @@ class MyAccessibilityService: AccessibilityService() {
 
 //        when(state) {
 //            STATE.HOME -> getMiaobi(event)
-//            STATE.SHOP -> browseShop(event)
+//            STATE.BROWSE -> browseShop(event)
 //            STATE.RETURN_HOME -> getMiaobiAgain(event)
 //        }
     }
@@ -116,7 +109,7 @@ class MyAccessibilityService: AccessibilityService() {
                     state = STATE.HOME
                 }
             }
-            STATE.SHOP -> {
+            STATE.BROWSE -> {
                 handleShopState(event)
             }
             STATE.RETURN_HOME -> {
@@ -245,7 +238,7 @@ class MyAccessibilityService: AccessibilityService() {
         val ret = parent?.performAction(AccessibilityNodeInfo.ACTION_CLICK) ?: false
         if(ret) {
             Log.d(TAG, "set state shop")
-            state = STATE.SHOP
+            state = STATE.BROWSE
         }
 
         return ret
@@ -300,7 +293,7 @@ class MyAccessibilityService: AccessibilityService() {
         val performed = shopNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK)
         if(performed != null && performed) {
             Log.d(TAG, "set state : shop")
-            state = STATE.SHOP
+            state = STATE.BROWSE
         }
 
         return shopNode != null
@@ -316,7 +309,7 @@ class MyAccessibilityService: AccessibilityService() {
 
         if(performed != null && performed) {
             Log.d(TAG, "set state : shop(browse)")
-            state = STATE.SHOP
+            state = STATE.BROWSE
         }
 
         return shopNode != null

@@ -11,8 +11,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SecondActivity"
-            android:label="第二页"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,8 +19,20 @@
             </intent-filter>
         </activity>
 
+<!--        <service-->
+<!--            android:name=".MyAccessibilityService"-->
+<!--            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.accessibilityservice.AccessibilityService" />-->
+<!--            </intent-filter>-->
+
+<!--            <meta-data-->
+<!--                android:name="android.accessibilityservice"-->
+<!--                android:resource="@xml/accessibility_service_config" />-->
+<!--        </service>-->
+
         <service
-            android:name=".MyAccessibilityService"
+            android:name=".LaborerAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -32,6 +42,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+
     </application>
 
 </manifest>
