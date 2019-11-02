@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flow
 import kotlin.system.measureTimeMillis
 
 class SuningLaborer(service: AccessibilityService): TaskLaborer(service) {
-    //nexus 7 is too slow
     private var isFirst = true
 
     override fun init() {
@@ -40,7 +39,7 @@ class SuningLaborer(service: AccessibilityService): TaskLaborer(service) {
     fun goShop() {
         Log.d(TAG, "goShop")
         MainScope().launch {
-            val delayTime: Long = if(BuildConfig.DEBUG && isFirst) 20000 else 3000
+            val delayTime: Long = if(isFirst) 20000 else 3000
             delay(delayTime)
             val node = service.rootInActiveWindow
             val shopNode = findNodeByText(node, "+6000")
