@@ -18,6 +18,10 @@ class TaobaoLaborer(service: AccessibilityService): TaskLaborer(service) {
         return "com.taobao.browser.BrowserActivity"
     }
 
+    override fun canHandleCurrentNode(): Boolean {
+        return isHomeClass()
+    }
+
     override fun isActive(): Boolean {
         return true
     }

@@ -15,10 +15,10 @@ abstract class TaskLaborer(service: AccessibilityService): BaseLaborer(service) 
             Log.d(TAG, "set state: $value")
             field = value
         }
-    abstract fun triggerWork(event: AccessibilityEvent)
-    abstract fun handleHome()
-    abstract fun handleBrowse()
-    abstract fun handleReturnHome()
+    open fun triggerWork(event: AccessibilityEvent) {}
+    open fun handleHome(){}
+    open fun handleBrowse() {}
+    open fun handleReturnHome() {}
 
     override fun init() {
         state = STATE.IDLE
@@ -27,7 +27,17 @@ abstract class TaskLaborer(service: AccessibilityService): BaseLaborer(service) 
         service.serviceInfo = info
     }
 
+    override fun start() {
+        state = STATE.HOME
+        handleHome()
+
+    }
+
     override fun finish() {
+        state = STATE.IDLE
+        val info = service.serviceInfo
+        info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK
+        service.serviceInfo = info
     }
 
     override fun handleEvent(event: AccessibilityEvent) {
@@ -43,16 +53,10 @@ abstract class TaskLaborer(service: AccessibilityService): BaseLaborer(service) 
 
         when (state) {
             STATE.IDLE -> {
-                if(getHomeClassName() == event.className) {
-                    state = STATE.HOME
-                    handleHome()
-//                    MainScope().launch {
-//                        Log.d(TAG, "start to print")
-//                        delay(20000)
-//                        printCurrentNodes(service)
-//                    }
-
-                }
+//                if(getHomeClassName() == event.className) {
+//                    state = STATE.HOME
+//                    handleHome()
+//                }
             }
             STATE.HOME -> {
 //                MainScope().launch {
@@ -77,7 +81,7 @@ abstract class TaskLaborer(service: AccessibilityService): BaseLaborer(service) 
         }
     }
 
-    fun onViewClick(event: AccessibilityEvent) {
+    open fun onViewClick(event: AccessibilityEvent) {
         Log.d(TAG, "onViewClick")
         if(state == STATE.HOME) {
             triggerWork(event)

@@ -1,28 +1,44 @@
 package com.rayject.accessiblelaborer
 
 import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
+import android.view.accessibility.AccessibilityEvent
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
+@SuppressLint("StaticFieldLeak")
 object LaborerManager {
-    private val laborers = mutableListOf<Laborer?>()
+    var service: AccessibilityService? = null
+    val laborers = mutableListOf<Laborer>()
 
     fun init(service: AccessibilityService) {
+        this.service = service
         if(laborers.isEmpty()) {
-            createLaborers(service)
+//            createLaborers(service)
+            buildLaborers(service)
 
         }
 
     }
 
     fun destroy() {
+        service = null
         laborers.clear()
     }
 
+    private fun buildLaborers(service: AccessibilityService) {
+        laborers.add(buildSampleLaborer(service))
+        laborers.add(buildSuningHomeLaborer(service))
+
+    }
+
     private fun createLaborers(service: AccessibilityService) {
-        val LaborerClasses = listOf<KClass<out Laborer>>(
+        var LaborerClasses = listOf<KClass<out Laborer>>(
+//            SelfLaborer::class,
             TaobaoLaborer::class,
-            SuningLaborer::class
+            JdLaborer::class,
+            SuningLaborer::class,
+            WechatLaborer::class
         )
 
         for(cls in LaborerClasses) {
@@ -36,7 +52,24 @@ object LaborerManager {
 
     fun getLaborerByPkgName(packageName: CharSequence): Laborer? {
         return laborers.find {
-            it?.getPackageName() == packageName
+            it.getPackageName() == packageName
+        }
+    }
+
+    fun chooseLaborersByEvent(event: AccessibilityEvent): List<Laborer>? {
+        return laborers?.filter {
+            if(event.packageName.equals(it.getPackageName())
+                //TODO: 是否需要限制到className
+                && event.className.equals(it.getHomeClassName())) {
+                if(it.handleDelayMillis() != 0L) {
+                    //需要延迟确认时，先认为可以处理
+                    true
+                } else {
+                    it.canHandleCurrentNode()
+                }
+            } else {
+                false
+            }
         }
     }
 

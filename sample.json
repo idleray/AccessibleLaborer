@@ -1,0 +1,78 @@
+{
+  "packageName": "com.jingdong.app.mall",
+  "homeClassName": "com.suning.mobile.ucwv.ui.WebViewActivity",
+  "eventTypes": 0x00000020, //AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED等(按位与)
+  "initStateName": "home",
+  "handleDelay": 15000, //延时确认当前页面是否可以处理，例如webview需要加载时间
+  "text": "宠汪汪", // 用于判断labor是否可以处理此view，因为很多情况下（例如webview中），只能遍历所有的node，通过node的文字来确定页面是否是labor能处理的
+  "textType": 0, //0: node的text，1: node的contentDescription
+  "states": [
+    {
+      "name": "home",
+      "trigger": "click:window_state_change", //触发行为检测的事件( click: TYPE_VIEW_CLICKED,TODO: 是否使用AccessibilityEvent定义的事件值  )
+      "tasks": [ //按顺序执行以下的task
+        {
+          "next": "shopCollection", //下一个state
+          "timeLimit": true, //活动任务次数限制,(TODO:目前只处理text(0/10)这种形式的限制)
+          "limitTextContain": "关注店铺", //限制文字所包含的文字
+          "limitTextType": "0",
+          "actionText": "去关注", //触发动作所在node的文字
+          "actionTextType": 0, //0: node的text，1: node的contentDescription
+          "action": "click", //状态的动作,例如点击actionText的node，进入下一页面
+          "actionDelay": 1500 //执行action前的延时
+        },
+        {
+          "next": "goods",
+          "timeLimit": true,
+          "limitTextContain": "关注商品",
+          "limitTextType": 0,
+          "actionText": "去关注",
+          "actionTextType": "0",
+          "action": "click"
+        }
+      ]
+
+    },
+    {
+      "name": "shopCollection",
+      "trigger": "window_state_change",
+      "tasks":[
+        {
+          "next": "shop",
+          "actionDelay": 3000,
+          "actionText": "进店并关注",
+          "actionTextType": 0,
+          "action": "click"
+        },
+        {
+          "next": "home",
+          "handleDelay": 1000,
+          "action": "back"
+        }
+      ]
+    },
+    {
+      "name": "shop",
+      "trigger": "window_state_change",
+      "tasks":[
+        {
+          "next": "shopCollection",
+          "actionDelay": 15000,
+          "action": "back"
+        }
+      ]
+    },
+    {
+      "name": "goods",
+      "trigger": "window_state_change",
+      "tasks":[
+        {
+          "next": "home",
+          "actionDelay": 15000,
+          "action": "back"
+        }
+      ]
+    }
+  ]
+
+}

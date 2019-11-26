@@ -4,18 +4,48 @@ import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import kotlinx.coroutines.*
+import java.util.regex.Pattern
 
 interface Laborer {
+    val service: AccessibilityService
     fun init()
+    fun start()
     fun finish()
 
     fun getPackageName(): String
     fun getHomeClassName(): String
+    fun canHandleCurrentNode(): Boolean
+    fun handleDelayMillis(): Long
     fun isActive(): Boolean
     fun handleEvent(event: AccessibilityEvent)
+    fun handleEventByType(eventType: Int)
 }
 
-abstract class BaseLaborer(val service: AccessibilityService): Laborer
+abstract class BaseLaborer(override val service: AccessibilityService): Laborer {
+    override fun start() {
+
+    }
+
+    override fun handleEventByType(eventType: Int) {
+    }
+
+    override fun handleDelayMillis(): Long {
+        return 0
+    }
+
+    protected fun isHomeClass(): Boolean {
+        return service.rootInActiveWindow.className == getHomeClassName()
+    }
+}
+fun findNodeByWhatEver(node: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo? {
+    var node = findNode(node, text, 0)
+    if(node == null) {
+        node = findNode(node, text, 1)
+    }
+
+    return node
+}
 
 //findAccessibilityNodeInfosByText找不到，不知道原因
 fun findNodeByText(node: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo?{
@@ -96,11 +126,57 @@ fun printSources(source: AccessibilityNodeInfo, depth: Int) {
         printSources(child, dp)
     }
 
-    source.recycle()
+    //不要recycle，会导致node被回收。。。
+//    source.recycle()
 
 
 }
 
+fun logd(msg: String) {
+    Log.d("StateLaborer", msg)
+}
+
 fun AccessibilityService.back() {
     performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+}
+
+fun hasTaskRemain(text: String?): Boolean {
+    var ret = false
+    val pos = text?.indexOf("/") ?: -1
+    if(pos != -1) {
+        val remainP = Pattern.compile("\\d+(?=/)")
+        val m1 = remainP.matcher(text)
+        var remainCount = -1
+        if(m1.find()) {
+            remainCount = m1.group().toInt()
+        }
+
+        val tp = Pattern.compile("(?<=/)\\d+")
+        val m2 = tp.matcher(text)
+        var totalCount = -1
+        if(m2.find()) {
+            totalCount = m2.group().toInt()
+        }
+        if(remainCount != -1 && totalCount != -1 && remainCount < totalCount) {
+            Log.d("taskRemain", "remain: $remainCount, total: $totalCount")
+            ret = true
+        }
+    }
+
+    return ret
+}
+
+fun runDelay(timeMillis: Long, block: () -> Unit ): Job {
+    return MainScope().launch {
+        delay(timeMillis)
+        block()
+    }
+}
+
+fun runBlockingDelay(timeMillis: Long, block: () -> Unit ) {
+    //TODO: 对吗？
+    runBlocking {
+        delay(timeMillis)
+        block()
+    }
 }

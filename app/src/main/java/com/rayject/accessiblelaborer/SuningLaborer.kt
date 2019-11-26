@@ -24,6 +24,10 @@ class SuningLaborer(service: AccessibilityService): TaskLaborer(service) {
         return "com.suning.mobile.ucwv.ui.WebViewActivity"
     }
 
+    override fun canHandleCurrentNode(): Boolean {
+        return isHomeClass()
+    }
+
     override fun isActive(): Boolean {
         return true
     }
@@ -72,7 +76,8 @@ class SuningLaborer(service: AccessibilityService): TaskLaborer(service) {
     override fun handleBrowse() {
         MainScope().launch {
             delay(4000)
-            val node = findNodeByText(service.rootInActiveWindow, "任务完成")
+            var node = findNodeByText(service.rootInActiveWindow, "任务完成")
+            node = node ?: findNodeByText(service.rootInActiveWindow, "返回领取")
             val time = if(node == null){
                 15000L
             } else{
