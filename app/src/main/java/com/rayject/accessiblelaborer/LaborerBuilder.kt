@@ -11,7 +11,7 @@ fun buildSampleLaborer(service: AccessibilityService):Laborer {
     laborer.initStateName = "home"
     laborer.handleDelay = 5000
     laborer.text = "省钱攻略"
-    laborer.textType = 0
+//    laborer.textType = 0
 
     var state: State
     state = State()
@@ -22,7 +22,7 @@ fun buildSampleLaborer(service: AccessibilityService):Laborer {
     task = Task()
     task.next = "second"
     task.actionText = "进行中"
-    task.actionTextType = 0
+//    task.actionTextType = 0
     task.action = "click"
     state.tasks.add(task)
 
@@ -53,7 +53,7 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     laborer.initStateName = "home"
     laborer.handleDelay = 3000
     laborer.text = "首页"
-    laborer.textType = 0
+//    laborer.textType = 0
 
     var state: State
     state = State()
@@ -64,7 +64,7 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     task = Task()
     task.next = "second"
     task.actionText = "苏宁超市"
-    task.actionTextType = 0
+//    task.actionTextType = 0
     task.actionDelay = 3000
     task.action = "click"
     task.parentLevel = 1

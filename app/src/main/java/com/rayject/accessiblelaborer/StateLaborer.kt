@@ -11,9 +11,9 @@ class Task {
     var nextWhenComplete = ""
     var timeLimit = false
     var limitTextContain: String? = null
-    var limitTextType = 0
+//    var limitTextType = 0
     var actionText: String? = null
-    var actionTextType = 0
+//    var actionTextType = 0
     var action: String? = null
     var actionDelay: Long = 0
     var parentLevel = 0
@@ -37,7 +37,10 @@ class Task {
             if(timeLimit && !TextUtils.isEmpty(limitTextContain)) {
                 val node = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, limitTextContain!!)
                 if(node != null) {
-                    val text = if(limitTextType == 0) node.text else node.contentDescription
+                    var text = node.text
+                    if(TextUtils.isEmpty(text)) {
+                        text = node.contentDescription
+                    }
                     hasRemain = hasTaskRemain(text.toString())
                 }
             }
@@ -133,7 +136,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     var initStateName = ""
     var handleDelay = 0L
     var text = ""
-    var textType = 0
+//    var textType = 0
     var states: MutableList<State> = mutableListOf()
 
     var active = true
@@ -168,7 +171,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
 
     override fun canHandleCurrentNode(): Boolean {
         val node = service.rootInActiveWindow ?: return false
-        return findNode(node, text, textType) != null
+        return findNodeByWhatEver(node, text) != null
     }
 
     override fun isActive(): Boolean {
