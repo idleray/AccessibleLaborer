@@ -19,6 +19,7 @@
           "actionText": "去关注", //触发动作所在node的文字
           "actionTextType": 0, //0: node的text，1: node的contentDescription
           "action": "click", //状态的动作,例如点击actionText的node，进入下一页面
+          "parentLevel": 1, //父node的层级，有些点击事件是绑定在父node
           "actionDelay": 1500 //执行action前的延时
         },
         {

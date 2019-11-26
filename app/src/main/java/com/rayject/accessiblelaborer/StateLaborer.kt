@@ -6,7 +6,9 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
 class Task {
+    //TODO：2个next的状态转移使用状态机
     var next = ""
+    var nextWhenComplete = ""
     var timeLimit = false
     var limitTextContain: String? = null
     var limitTextType = 0
@@ -14,11 +16,11 @@ class Task {
     var actionTextType = 0
     var action: String? = null
     var actionDelay: Long = 0
+    var parentLevel = 0
     var completed = false
 
     fun run(): Boolean {
         logd("run task: $action")
-        //TODO: 根据actionType来执行不同流程
         return when(action) {
             "click" -> runClick()
             "back" -> runBack()
@@ -28,41 +30,52 @@ class Task {
     }
 
     fun runClick(): Boolean {
-        var ret = true
-        var hasRemain = true
-        if(timeLimit && !TextUtils.isEmpty(limitTextContain)) {
-            val node = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, limitTextContain!!)
-            if(node != null) {
-                val text = if(limitTextType == 0) node.text else node.contentDescription
-                hasRemain = hasTaskRemain(text.toString())
+        var ret = false
+        runBlockingDelay(actionDelay) {
+            logd("after ${actionDelay}ms, start to run click")
+            var hasRemain = true
+            if(timeLimit && !TextUtils.isEmpty(limitTextContain)) {
+                val node = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, limitTextContain!!)
+                if(node != null) {
+                    val text = if(limitTextType == 0) node.text else node.contentDescription
+                    hasRemain = hasTaskRemain(text.toString())
+                }
             }
-        }
 
-        if(hasRemain) {
+            if(hasRemain) {
 //            printCurrentNodes(LaborerManager.service!!)
-            val actionNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, actionText!!)
-            if(actionNode != null) {
-                logd("delay to click node")
-                printSources(actionNode, 0)
-
-                //TODO: 需要改成阻塞模式，返回结果
-                runBlockingDelay(actionDelay) {
-                    //TODO: 根据action来处理，目前认为只处理click
+                var actionNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, actionText!!)
+                if(actionNode != null) {
+//                printSources(actionNode, 0)
                     logd("click $actionText")
-                    actionNode.parent.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    for( i in 0 until parentLevel ) {
+                        actionNode = actionNode?.parent
+                    }
+                    ret = actionNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK) ?: false
+                } else {
+                    logd("can't find $actionText")
+                    //目前在没有数量限制的时候，找不到node，认为已完成
+                    //TODO: 需要确定如何才算完成，以及是否需要移除task
+                    if(!timeLimit) {
+                        completed = true
+                    }
+
                 }
             } else {
-                //找不到node，认为已完成
                 completed = true
             }
-        } else {
-            completed = true
         }
 
+        logd("runClick end")
         return ret
     }
 
     fun runBack(): Boolean {
+        logd("delay ${actionDelay}ms to back")
+        runBlockingDelay(actionDelay) {
+            logd("now back")
+            LaborerManager.service?.back()
+        }
         return true
     }
 }
@@ -86,6 +99,7 @@ class State {
             val ret = task.run()
             if(task.completed) {
                 removeTask(task)
+                return task.nextWhenComplete
             }
             return if(ret) {
                 task.next
@@ -172,9 +186,9 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     }
 
     override fun handleEvent(event: AccessibilityEvent) {
-        when(event.eventType) {
-            AccessibilityEvent.TYPE_VIEW_CLICKED -> printEvent(service, event)
-        }
+//        when(event.eventType) {
+//            AccessibilityEvent.TYPE_VIEW_CLICKED -> printEvent(service, event)
+//        }
         handleEventByType(event.eventType)
     }
 
@@ -184,6 +198,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
 
     private fun runTask() {
         val nextState = currentState?.runTask()
+        //TODO：从这里转移状态不对，因为有些是延迟task，需要task真正执行完才能转移状态。所以。。。上状态机？
         if(!TextUtils.isEmpty(nextState)) {
             transferState(nextState)
         }

@@ -67,6 +67,7 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     task.actionTextType = 0
     task.actionDelay = 3000
     task.action = "click"
+    task.parentLevel = 1
     state.tasks.add(task)
 
     laborer.states.add(state)
@@ -79,11 +80,116 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     task = Task()
     task.next = "home"
     task.action = "back"
-    task.actionDelay = 1500
+    task.actionDelay = 3000
     state.tasks.add(task)
 
     laborer.states.add(state)
 
+
+    return laborer
+}
+
+fun buildJdWangLaborer(service: AccessibilityService):Laborer {
+    val laborer = StateLaborer(service)
+    laborer.pkgName = "com.jingdong.app.mall"
+    laborer.className = "com.jingdong.app.mall.WebActivity"
+    laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED
+    laborer.initStateName = "home"
+    laborer.handleDelay = 5000
+    laborer.text = ""
+
+    var state: State
+    state = State()
+    state.name = "home"
+    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+
+    var task: Task
+    task = Task()
+    task.next = "shops"
+    task.timeLimit = true
+    task.limitTextContain = "关注店铺"
+    task.actionText = "去关注"
+    task.actionDelay = 1000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
+    task = Task()
+    task.next = "market"
+    task.timeLimit = true
+    task.limitTextContain = "逛逛会场"
+    task.actionText = "去逛逛"
+    task.actionDelay = 1000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
+    task = Task()
+    task.next = "goods"
+    task.timeLimit = true
+    task.limitTextContain = "关注商品"
+    task.actionText = "去关注"
+    task.actionDelay = 1000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
+    laborer.states.add(state)
+
+    //------------state shops
+    state = State()
+    state.name = "shops"
+    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+
+    task = Task()
+    task.next = "shop"
+    task.nextWhenComplete = "home"
+    task.actionText = "进店并关注"
+    task.action = "click"
+    task.parentLevel = 0
+    task.actionDelay = 2000
+    state.tasks.add(task)
+
+    laborer.states.add(state)
+
+    //------------state shop
+    state = State()
+    state.name = "shop"
+    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+
+    task = Task()
+    task.next = "shops"
+    task.action = "back"
+    task.actionDelay = 7000
+    state.tasks.add(task)
+
+    laborer.states.add(state)
+
+    //------------state market
+    state = State()
+    state.name = "market"
+    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+
+    task = Task()
+    task.next = "home"
+    task.action = "back"
+    task.actionDelay = 7000
+    state.tasks.add(task)
+
+    laborer.states.add(state)
+
+    //------------state market
+    state = State()
+    state.name = "goods"
+    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+
+    task = Task()
+    task.next = "home"
+    task.action = "back"
+    task.actionDelay = 7000
+    state.tasks.add(task)
+
+    laborer.states.add(state)
 
     return laborer
 }

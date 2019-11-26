@@ -29,16 +29,17 @@ object LaborerManager {
     private fun buildLaborers(service: AccessibilityService) {
         laborers.add(buildSampleLaborer(service))
         laborers.add(buildSuningHomeLaborer(service))
+        laborers.add(buildJdWangLaborer(service))
 
     }
 
     private fun createLaborers(service: AccessibilityService) {
         var LaborerClasses = listOf<KClass<out Laborer>>(
 //            SelfLaborer::class,
-            TaobaoLaborer::class,
-            JdLaborer::class,
-            SuningLaborer::class,
-            WechatLaborer::class
+//            TaobaoLaborer::class,
+//            JdLaborer::class,
+//            SuningLaborer::class,
+//            WechatLaborer::class
         )
 
         for(cls in LaborerClasses) {

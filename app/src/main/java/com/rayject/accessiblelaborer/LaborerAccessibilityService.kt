@@ -86,7 +86,6 @@ class LaborerAccessibilityService: AccessibilityService() {
             }
         }
 
-        //TODO: 需要判断场景
         currentLaborer?.handleEvent(event)
     }
 
