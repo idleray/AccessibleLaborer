@@ -6,9 +6,9 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
 class Task {
-    //TODO：2个next的状态转移使用状态机
+    var name =""
     var next = ""
-    var nextWhenComplete = ""
+//    var nextWhenComplete = ""
     var timeLimit = false
     var limitTextContain: String? = null
 //    var limitTextType = 0
@@ -20,13 +20,15 @@ class Task {
     var completed = false
 
     fun run(): Boolean {
-        logd("run task: $action")
-        return when(action) {
+        logd("--------- run task: ${name}, action = $action")
+        val ret  = when(action) {
             "click" -> runClick()
             "back" -> runBack()
             else -> true
         }
 
+        logd("--------- run task end------")
+        return ret
     }
 
     fun runClick(): Boolean {
@@ -85,6 +87,8 @@ class Task {
 
 class State {
     var name = ""
+    var nextWhenComplete = ""
+    var status = 0 //判断是否已进入此状态，配合triggerType用，比如triggerType是1时判断后不用重复调用task,主要是TYPE_WINDOW_CONTENT_CHANGED事件会发生多次。 0: 未进入， 1：已进入
     var triggers: List<Int>? = null
     var trigger = ""
         set(value) {
@@ -93,36 +97,49 @@ class State {
                 it.toInt()
             }
         }
+    var triggerType = 0 // 0: 不限制次数 1: 仅一次
     var tasks: MutableList<Task> = mutableListOf()
     var completedTasks: MutableList<Task> = mutableListOf()
 
+    fun enter() {
+        status = 1
+
+    }
+
+    fun exit() {
+        status = 0
+    }
+
     fun runTask(): String? {
-        val task = firstTask()
-        if(task != null) {
-            val ret = task.run()
+        logd("runTask")
+        var nextState: String? = null
+        for( task in tasks) {
+            logd("task[${task.name}] completed: ${task.completed}")
             if(task.completed) {
-                removeTask(task)
-                return task.nextWhenComplete
+                continue
             }
-            return if(ret) {
-                task.next
-            } else {
-                null
+            val ret = task.run()
+            if(ret) {
+                nextState = task.next
+                break
             }
-        } else {
-            return null
         }
+        //认为所有task已完成，转移到另一个state
+        if(nextState == null) {
+            nextState = nextWhenComplete
+        }
+
+        return nextState
     }
 
     private fun firstTask(): Task? {
-        return if(tasks.isNotEmpty()) {
-            tasks[0]
-        } else {
-            null
+        return tasks.find {
+            !it.completed
         }
     }
 
     private fun removeTask(task: Task) {
+        logd("removeTask: ")
         tasks.remove(task)
         completedTasks.add(task)
 
@@ -147,9 +164,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
         info.eventTypes = eventTypes
         service.serviceInfo = info
 
-        currentState = states.find {
-            it.name == initStateName
-        }
+        transitionState(initStateName)
     }
 
     override fun start() {
@@ -202,12 +217,18 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     private fun runTask() {
         val nextState = currentState?.runTask()
         //TODO：从这里转移状态不对，因为有些是延迟task，需要task真正执行完才能转移状态。所以。。。上状态机？
+        //TODO: 目前是阻塞模式，状态是正确的
         if(!TextUtils.isEmpty(nextState)) {
-            transferState(nextState)
+            transitionState(nextState)
         }
     }
 
-    private fun transferState(statName: String?) {
+    private fun transitionState(statName: String?) {
+        logd("transition to: $statName")
+        if(TextUtils.isEmpty(statName)) {
+            logd("don't transition state")
+            return
+        }
         currentState = states?.find {
             it.name == statName
         }
