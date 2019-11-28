@@ -35,6 +35,7 @@ class Task {
         var ret = false
         runBlockingDelay(actionDelay) {
             logd("after ${actionDelay}ms, start to run click")
+            printCurrentNodes(LaborerManager.service!!)
             var hasRemain = true
             if(timeLimit && !TextUtils.isEmpty(limitTextContain)) {
                 val node = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, limitTextContain!!)
@@ -87,7 +88,7 @@ class Task {
 
 class State {
     var name = ""
-    var nextWhenComplete = ""
+//    var nextWhenComplete = ""
     var status = 0 //判断是否已进入此状态，配合triggerType用，比如triggerType是1时判断后不用重复调用task,主要是TYPE_WINDOW_CONTENT_CHANGED事件会发生多次。 0: 未进入， 1：已进入
     var triggers: List<Int>? = null
     var trigger = ""
@@ -99,7 +100,8 @@ class State {
         }
     var triggerType = 0 // 0: 不限制次数 1: 仅一次
     var tasks: MutableList<Task> = mutableListOf()
-    var completedTasks: MutableList<Task> = mutableListOf()
+//    var completedTasks: MutableList<Task> = mutableListOf()
+    var completeTask: Task? = null
 
     fun enter() {
         status = 1
@@ -126,7 +128,12 @@ class State {
         }
         //认为所有task已完成，转移到另一个state
         if(nextState == null) {
-            nextState = nextWhenComplete
+            logd("complete to state: $nextState")
+            val ret = completeTask?.run() ?: false
+            if(ret) {
+                nextState = completeTask?.next
+            }
+//            nextState = nextWhenComplete
         }
 
         return nextState
@@ -138,12 +145,12 @@ class State {
         }
     }
 
-    private fun removeTask(task: Task) {
-        logd("removeTask: ")
-        tasks.remove(task)
-        completedTasks.add(task)
-
-    }
+//    private fun removeTask(task: Task) {
+//        logd("removeTask: ")
+//        tasks.remove(task)
+//        completedTasks.add(task)
+//
+//    }
 }
 
 class StateLaborer(override val service: AccessibilityService): Laborer{
@@ -160,6 +167,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     var currentState: State? = null
 
     override fun init() {
+        logd("init --> $text")
         val info = service.serviceInfo
         info.eventTypes = eventTypes
         service.serviceInfo = info

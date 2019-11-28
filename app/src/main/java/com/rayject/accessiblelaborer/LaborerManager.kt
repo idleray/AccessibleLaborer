@@ -30,6 +30,7 @@ object LaborerManager {
         laborers.add(buildSampleLaborer(service))
         laborers.add(buildSuningHomeLaborer(service))
         laborers.add(buildJdWangLaborer(service))
+        laborers.add(buildJdQpsLaborer(service))
 
     }
 

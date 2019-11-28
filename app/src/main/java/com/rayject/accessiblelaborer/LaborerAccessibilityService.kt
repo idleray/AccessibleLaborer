@@ -39,12 +39,13 @@ class LaborerAccessibilityService: AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if(BuildConfig.DEBUG) {
 //            printEvent(this, event)
-//            logd(AccessibilityEvent.eventTypeToString(event.eventType))
+//            printCurrentNodes(this)
+            logd(AccessibilityEvent.eventTypeToString(event.eventType))
 //            logd("contentChangeTypes: ${event.contentChangeTypes}")
         }
 
         if(event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            logd("int TYPE_WINDOW_STATE_CHANGED")
+            logd("in TYPE_WINDOW_STATE_CHANGED")
             if(!event.packageName.equals(currentLaborer?.getPackageName())) {
                 logd("clear current laborer: ${currentLaborer?.getPackageName()}")
                 currentLaborer?.finish()
@@ -94,6 +95,12 @@ class LaborerAccessibilityService: AccessibilityService() {
     override fun onUnbind(intent: Intent?): Boolean {
         LaborerManager.destroy()
         return super.onUnbind(intent)
+    }
+
+    override fun onGesture(gestureId: Int): Boolean {
+        logd("onGesture: gestureId = $gestureId")
+        return super.onGesture(gestureId)
+
     }
 
     private fun cancelJobs() {

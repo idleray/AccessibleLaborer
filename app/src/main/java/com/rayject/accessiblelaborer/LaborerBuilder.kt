@@ -89,14 +89,35 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     return laborer
 }
 
+fun buildJdQpsLaborer(service: AccessibilityService):Laborer {
+    val laborer = StateLaborer(service)
+    laborer.pkgName = "com.jingdong.app.mall"
+    laborer.className = "com.jingdong.app.mall.WebActivity"
+//    laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+    laborer.eventTypes = AccessibilityEvent.TYPES_ALL_MASK
+    laborer.initStateName = "home"
+    laborer.handleDelay = 5000
+    laborer.text = "奇葩说"
+
+    var state: State
+    state = State()
+    state.name = "home"
+    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+
+    laborer.states.add(state)
+
+    return laborer
+}
+
 fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     val laborer = StateLaborer(service)
     laborer.pkgName = "com.jingdong.app.mall"
+//    laborer.pkgName = "com.tencent.mm"
     laborer.className = "com.jingdong.app.mall.WebActivity"
     laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
     laborer.initStateName = "home"
     laborer.handleDelay = 5000
-    laborer.text = ""
+    laborer.text = "宠汪汪"
 
     var state: State
     state = State()
@@ -110,18 +131,19 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     task.timeLimit = true
     task.limitTextContain = "关注店铺"
     task.actionText = "去关注"
-    task.actionDelay = 1000
+    task.actionDelay = 3000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
 
+    //TODO:问题：有时候TYPE_WINDOW_STATE_CHANGED事件，会找不到文字"去逛逛"，是否和阻塞有关？
     task = Task()
     task.name = "去会场页面"
     task.next = "market"
     task.timeLimit = true
     task.limitTextContain = "逛逛会场"
     task.actionText = "去逛逛"
-    task.actionDelay = 1000
+    task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
@@ -132,7 +154,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     task.timeLimit = true
     task.limitTextContain = "关注商品"
     task.actionText = "去关注"
-    task.actionDelay = 1000
+    task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
@@ -142,9 +164,16 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     //------------state shops
     state = State()
     state.name = "shops"
-    state.nextWhenComplete = "home"
+//    state.nextWhenComplete = "home"
     state.trigger = "${AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED}"
     state.triggerType = 1
+    //结束task
+    task = Task()
+    task.name = "从店铺集合返回"
+    task.next = "home"
+    task.action = "back"
+    task.actionDelay = 2000
+    state.completeTask = task
 
     task = Task()
     task.name = "关注店铺"
@@ -168,13 +197,17 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     task.next = "shops"
     task.action = "back"
     task.actionDelay = 7000
-    state.tasks.add(task)
+    state.completeTask = task
 
     laborer.states.add(state)
 
     //------------state market
     state = State()
     state.name = "market"
+    //TODO: mix2s的京东，webview的url跳转不是TYPE_WINDOW_STATE_CHANGED。但后来试了又会发来，似乎是漏掉了？是否和task的阻塞运行有关
+    //更新：后来发来的应该是跳转了一个新页面，而不是url跳转
+    //所以对于webview的url，要改为TYPE_WINDOW_CONTENT_CHANGED，但由于TYPE_WINDOW_CONTENT_CHANGED会出现多次，
+    //需要triggerType。triggerType放在state还是task呢？还需要state的status来配合
     state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
 
     task = Task()
@@ -182,7 +215,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     task.next = "home"
     task.action = "back"
     task.actionDelay = 7000
-    state.tasks.add(task)
+    state.completeTask = task
 
     laborer.states.add(state)
 
@@ -196,7 +229,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     task.next = "home"
     task.action = "back"
     task.actionDelay = 7000
-    state.tasks.add(task)
+    state.completeTask = task
 
     laborer.states.add(state)
 
