@@ -27,10 +27,11 @@ object LaborerManager {
     }
 
     private fun buildLaborers(service: AccessibilityService) {
-        laborers.add(buildSampleLaborer(service))
-        laborers.add(buildSuningHomeLaborer(service))
-        laborers.add(buildJdWangLaborer(service))
-        laborers.add(buildJdQpsLaborer(service))
+//        laborers.add(buildSampleLaborer(service))
+//        laborers.add(buildSuningHomeLaborer(service))
+//        laborers.add(buildJdWangLaborer(service))
+//        laborers.add(buildJdQpsLaborer(service))
+        laborers.add(buildTbLaborer(service))
 
     }
 

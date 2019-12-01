@@ -35,7 +35,7 @@ class Task {
         var ret = false
         runBlockingDelay(actionDelay) {
             logd("after ${actionDelay}ms, start to run click")
-            printCurrentNodes(LaborerManager.service!!)
+//            printCurrentNodes(LaborerManager.service!!)
             var hasRemain = true
             if(timeLimit && !TextUtils.isEmpty(limitTextContain)) {
                 val node = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, limitTextContain!!)
@@ -194,6 +194,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
 
     override fun canHandleCurrentNode(): Boolean {
         val node = service.rootInActiveWindow ?: return false
+//        printCurrentNodes(service)
         return findNodeByWhatEver(node, text) != null
     }
 
