@@ -3,15 +3,15 @@ package com.rayject.accessiblelaborer
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 
-fun buildTbLaborer(service: AccessibilityService):Laborer {
+fun buildJdLaborer(service: AccessibilityService):Laborer {
     val laborer = StateLaborer(service)
-    laborer.pkgName = "com.taobao.taobao"
+    laborer.pkgName = "com.jingdong.app.mall"
 //    laborer.pkgName = "com.tencent.mm"
-    laborer.className = "com.taobao.browser.BrowserActivity"
-    laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED// or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+    laborer.className = "com.jingdong.app.mall.WebActivity"
+    laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
     laborer.initStateName = "home"
-    laborer.handleDelay = 5000
-    laborer.text = "福年种福果"
+    laborer.handleDelay = if(BuildConfig.DEBUG) 20000 else 10000
+    laborer.text = "全民炸年兽"
 
     var state: State
     state = State()
@@ -23,23 +23,35 @@ fun buildTbLaborer(service: AccessibilityService):Laborer {
     task.name="去浏览任务"
     task.next = "shop"
     task.timeLimit = true
-//    task.limitTextContain = "关注店铺"
-    task.actionText = "去浏览"
+    task.limitTextContain = "逛逛好店"
+    task.actionText = "去完成"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
 
     task = Task()
-    task.name = "去搜索任务"
-    task.next = "search"
+    task.name="去浏览任务"
+    task.next = "shop"
     task.timeLimit = true
-//    task.limitTextContain = "逛逛会场"
-    task.actionText = "去搜索"
+    task.limitTextContain = "逛逛热卖会场"
+    task.actionText = "去完成"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
+
+    task = Task()
+    task.name="去浏览任务"
+    task.next = "shop"
+    task.timeLimit = true
+    task.limitTextContain = "看京东推荐官直播"
+    task.actionText = "去完成"
+    task.actionDelay = 2000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
 
     laborer.states.add(state)
 
@@ -51,20 +63,7 @@ fun buildTbLaborer(service: AccessibilityService):Laborer {
     task.name = "返回任务中心"
     task.next = "home"
     task.action = "back"
-    task.actionDelay = 24000
-    state.completeTask = task
-
-    laborer.states.add(state)
-
-    state = State()
-    state.name = "search"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
-
-    task = Task()
-    task.name = "返回任务中心"
-    task.next = "home"
-    task.action = "back"
-    task.actionDelay = 20000
+    task.actionDelay = 2000
     state.completeTask = task
 
     laborer.states.add(state)

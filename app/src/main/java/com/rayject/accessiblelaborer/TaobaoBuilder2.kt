@@ -3,14 +3,14 @@ package com.rayject.accessiblelaborer
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
 
-fun buildTbLaborer(service: AccessibilityService):Laborer {
+fun buildTbLaborer2(service: AccessibilityService):Laborer {
     val laborer = StateLaborer(service)
     laborer.pkgName = "com.taobao.taobao"
 //    laborer.pkgName = "com.tencent.mm"
     laborer.className = "com.taobao.browser.BrowserActivity"
     laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED// or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
     laborer.initStateName = "home"
-    laborer.handleDelay = 5000
+    laborer.handleDelay = 10000
     laborer.text = "福年种福果"
 
     var state: State
