@@ -36,6 +36,7 @@ object LaborerManager {
         laborers.add(buildTbLaborer2(service))
         laborers.add(buildJdLaborer(service))
         laborers.add(buildJdLaborer2(service))
+        laborers.add(buildJdCwwLaborer(service))
 
     }
 

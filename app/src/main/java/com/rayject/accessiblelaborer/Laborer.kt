@@ -13,6 +13,7 @@ interface Laborer {
     fun start()
     fun finish()
 
+    fun getName(): String // laborer name
     fun getPackageName(): String
     fun getHomeClassName(): String
     fun canHandleCurrentNode(): Boolean
@@ -38,10 +39,10 @@ abstract class BaseLaborer(override val service: AccessibilityService): Laborer 
         return service.rootInActiveWindow.className == getHomeClassName()
     }
 }
-fun findNodeByWhatEver(node: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo? {
-    var node = findNode(node, text, 0)
+fun findNodeByWhatEver(root: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo? {
+    var node = findNode(root, text, 0)
     if(node == null) {
-        node = findNode(node, text, 1)
+        node = findNode(root, text, 1)
     }
 
     return node
@@ -82,11 +83,11 @@ fun findNode(node: AccessibilityNodeInfo?, text: String, type: Int): Accessibili
                 retNode = aNode
                 break
             }
-            aNode?.recycle()
+//            aNode?.recycle()
         }
     }
 
-    node?.recycle()
+//    node?.recycle()
 
     return retNode
 }
@@ -109,6 +110,10 @@ fun printEvent(service: AccessibilityService, event: AccessibilityEvent) {
 fun printCurrentNodes(service: AccessibilityService) {
     Log.d("eventType", AccessibilityEvent.eventTypeToString(service.serviceInfo.eventTypes))
 
+    if(service.rootInActiveWindow == null) {
+        logd("rootInActiveWindow is null")
+        return
+    }
     printSources(service.rootInActiveWindow, 0)
 
 }
@@ -157,8 +162,8 @@ fun hasTaskRemain(text: String?): Boolean {
         if(m2.find()) {
             totalCount = m2.group().toInt()
         }
+        Log.d("taskRemain", "remain: $remainCount, total: $totalCount")
         if(remainCount != -1 && totalCount != -1 && remainCount < totalCount) {
-            Log.d("taskRemain", "remain: $remainCount, total: $totalCount")
             ret = true
         }
     }

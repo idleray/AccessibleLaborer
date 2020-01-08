@@ -52,11 +52,13 @@ class Task {
 //            printCurrentNodes(LaborerManager.service!!)
                 var actionNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, actionText!!)
                 if(actionNode != null) {
-//                printSources(actionNode, 0)
                     logd("click $actionText")
                     for( i in 0 until parentLevel ) {
                         actionNode = actionNode?.parent
                     }
+//                    if(actionNode != null) {
+//                        printSources(actionNode, 0)
+//                    }
                     ret = actionNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK) ?: false
                 } else {
                     logd("can't find $actionText")
@@ -72,7 +74,7 @@ class Task {
             }
         }
 
-        logd("runClick end")
+        logd("runClick end. completed: $completed")
         return ret
     }
 
@@ -168,8 +170,9 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
 
     override fun init() {
         logd("init --> $text")
+        logd("eventTypes: " + AccessibilityEvent.eventTypeToString(eventTypes))
         val info = service.serviceInfo
-        info.eventTypes = eventTypes
+        info.eventTypes = if(eventTypes > 0) eventTypes else AccessibilityEvent.TYPES_ALL_MASK
         service.serviceInfo = info
 
         transitionState(initStateName)
@@ -182,6 +185,10 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     }
 
     override fun finish() {
+    }
+
+    override fun getName(): String {
+        return text
     }
 
     override fun getPackageName(): String {
@@ -215,7 +222,9 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     override fun handleEvent(event: AccessibilityEvent) {
 //        when(event.eventType) {
 //            AccessibilityEvent.TYPE_VIEW_CLICKED -> printEvent(service, event)
+//            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> printEvent(service, event)
 //        }
+//        printCurrentNodes(service)
         handleEventByType(event.eventType)
     }
 

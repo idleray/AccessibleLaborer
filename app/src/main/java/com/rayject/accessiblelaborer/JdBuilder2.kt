@@ -10,7 +10,7 @@ fun buildJdLaborer2(service: AccessibilityService):Laborer {
     laborer.className = "com.jingdong.app.mall.WebActivity"
     laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED// or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
     laborer.initStateName = "home"
-    laborer.handleDelay = 5000
+    laborer.handleDelay = 10000
     laborer.text = "十二生肖来送福"
 
     var state: State
@@ -40,7 +40,7 @@ fun buildJdLaborer2(service: AccessibilityService):Laborer {
     task.name = "返回任务中心"
     task.next = "home"
     task.action = "back"
-    task.actionDelay = 2000
+    task.actionDelay = 1000
     state.completeTask = task
 
     laborer.states.add(state)

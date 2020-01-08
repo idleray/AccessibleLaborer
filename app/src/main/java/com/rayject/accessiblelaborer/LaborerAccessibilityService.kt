@@ -1,6 +1,7 @@
 package com.rayject.accessiblelaborer
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -24,6 +25,7 @@ class LaborerAccessibilityService: AccessibilityService() {
         LaborerManager.init(this)
 
         val info = serviceInfo
+        info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ENHANCED_WEB_ACCESSIBILITY
         info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK
         info.packageNames = LaborerManager.laborers.map {
             it.getPackageName()
@@ -41,7 +43,7 @@ class LaborerAccessibilityService: AccessibilityService() {
 //            printEvent(this, event)
 //            printCurrentNodes(this)
             logd(AccessibilityEvent.eventTypeToString(event.eventType))
-//            logd("contentChangeTypes: ${event.contentChangeTypes}")
+            logd("contentChangeTypes: ${event.contentChangeTypes}")
         }
 
         if(event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
@@ -67,14 +69,14 @@ class LaborerAccessibilityService: AccessibilityService() {
 //                    currentLaborer?.handleEvent(event)
                 } else {
                     candidates?.forEach {
-                        logd("delay to found")
+                        logd("${it.getName()}: delay to found")
                         val job = runDelay(it.handleDelayMillis()){
                             if(it.canHandleCurrentNode()) {
                                 logd("now to found delay laborer")
                                 //TODO: Use Mutex to deal concurrency
                                 if(currentLaborer == null) {
                                     currentLaborer = it
-                                    logd("found delay laborer: ${currentLaborer?.getPackageName()}")
+                                    logd("found delay laborer: ${currentLaborer?.getName()}")
                                     currentLaborer?.init()
                                     //异步执行，因此在此处理事件
                                     currentLaborer?.handleEventByType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
