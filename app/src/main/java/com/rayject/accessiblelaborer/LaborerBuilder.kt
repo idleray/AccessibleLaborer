@@ -16,7 +16,7 @@ fun buildSampleLaborer(service: AccessibilityService):Laborer {
     var state: State
     state = State()
     state.name = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     var task: Task
     task = Task()
@@ -31,7 +31,7 @@ fun buildSampleLaborer(service: AccessibilityService):Laborer {
     //------------state 2
     state = State()
     state.name = "second"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     task = Task()
     task.next = "home"
@@ -58,7 +58,7 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     var state: State
     state = State()
     state.name = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     var task: Task
     task = Task()
@@ -75,7 +75,7 @@ fun buildSuningHomeLaborer(service: AccessibilityService):Laborer {
     //------------state 2
     state = State()
     state.name = "second"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     task = Task()
     task.next = "home"
@@ -102,7 +102,7 @@ fun buildJdQpsLaborer(service: AccessibilityService):Laborer {
     var state: State
     state = State()
     state.name = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     laborer.states.add(state)
 
@@ -122,7 +122,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     var state: State
     state = State()
     state.name = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     var task: Task
     task = Task()
@@ -165,7 +165,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     state = State()
     state.name = "shops"
 //    state.nextWhenComplete = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED}"
+    state.triggers = builderTriggers1()
     state.triggerType = 1
     //结束task
     task = Task()
@@ -190,7 +190,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     //------------state shop
     state = State()
     state.name = "shop"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+    state.triggers = builderTriggers1()
 
     task = Task()
     task.name = "返回店铺集合页面"
@@ -208,7 +208,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     //更新：后来发来的应该是跳转了一个新页面，而不是url跳转
     //所以对于webview的url，要改为TYPE_WINDOW_CONTENT_CHANGED，但由于TYPE_WINDOW_CONTENT_CHANGED会出现多次，
     //需要triggerType。triggerType放在state还是task呢？还需要state的status来配合
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+    state.triggers = builderTriggers1()
 
     task = Task()
     task.name = "会场页返回"
@@ -222,7 +222,7 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     //------------state goods
     state = State()
     state.name = "goods"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+    state.triggers = builderTriggers1()
 
     task = Task()
     task.name = "商品页返回"

@@ -16,7 +16,7 @@ fun buildJdLaborer(service: AccessibilityService):Laborer {
     var state: State
     state = State()
     state.name = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     var task: Task
     task = Task()
@@ -79,7 +79,7 @@ fun buildJdLaborer(service: AccessibilityService):Laborer {
 
     state = State()
     state.name = "shop"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+    state.triggers = builderTriggers1()
 
     task = Task()
     task.name = "返回任务中心"

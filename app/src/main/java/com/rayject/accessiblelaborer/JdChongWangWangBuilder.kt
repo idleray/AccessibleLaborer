@@ -16,7 +16,7 @@ fun buildJdCwwLaborer(service: AccessibilityService):Laborer {
     var state: State
     state = State()
     state.name = "home"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderDefaultTriggers()
 
     var task: Task
     task = Task()
@@ -57,7 +57,7 @@ fun buildJdCwwLaborer(service: AccessibilityService):Laborer {
 
     state = State()
     state.name = "shops"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED}:${AccessibilityEvent.TYPE_VIEW_CLICKED}"
+    state.triggers = builderTriggers2()
     //TODO: triggerType与trigger是一对一关系
     state.triggerType = 1
 
@@ -82,7 +82,7 @@ fun buildJdCwwLaborer(service: AccessibilityService):Laborer {
 
     state = State()
     state.name = "browse"
-    state.trigger = "${AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED}"
+    state.triggers = builderTriggers1()
 
     task = Task()
     task.name = "返回任务中心"

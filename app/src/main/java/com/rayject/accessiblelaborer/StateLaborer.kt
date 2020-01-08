@@ -92,14 +92,14 @@ class State {
     var name = ""
 //    var nextWhenComplete = ""
     var status = 0 //判断是否已进入此状态，配合triggerType用，比如triggerType是1时判断后不用重复调用task,主要是TYPE_WINDOW_CONTENT_CHANGED事件会发生多次。 0: 未进入， 1：已进入
-    var triggers: List<Int>? = null
-    var trigger = ""
-        set(value) {
-            field = value
-            triggers = value.split(":").map {
-                it.toInt()
-            }
-        }
+    var triggers: List<Trigger>? = null
+//    var trigger = ""
+//        set(value) {
+//            field = value
+//            triggers = value.split(":").map {
+//                it.toInt()
+//            }
+//        }
     var triggerType = 0 // 0: 不限制次数 1: 仅一次
     var tasks: MutableList<Task> = mutableListOf()
 //    var completedTasks: MutableList<Task> = mutableListOf()
@@ -229,7 +229,10 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     }
 
     private fun canTrigger(eventType: Int): Boolean {
-        return currentState?.triggers?.contains(eventType) ?: false
+        val trigger = currentState?.triggers?.find {
+            it.eventType == eventType
+        }
+        return trigger != null
     }
 
     private fun runTask() {
