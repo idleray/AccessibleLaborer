@@ -43,7 +43,7 @@ class LaborerAccessibilityService: AccessibilityService() {
 //            printEvent(this, event)
 //            printCurrentNodes(this)
             logd(AccessibilityEvent.eventTypeToString(event.eventType))
-            logd("contentChangeTypes: ${event.contentChangeTypes}")
+//            logd("contentChangeTypes: ${event.contentChangeTypes}")
         }
 
         if(event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {

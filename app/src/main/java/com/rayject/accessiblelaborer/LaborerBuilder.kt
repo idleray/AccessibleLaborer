@@ -166,7 +166,6 @@ fun buildJdWangLaborer(service: AccessibilityService):Laborer {
     state.name = "shops"
 //    state.nextWhenComplete = "home"
     state.triggers = builderTriggers1()
-    state.triggerType = 1
     //结束task
     task = Task()
     task.name = "从店铺集合返回"

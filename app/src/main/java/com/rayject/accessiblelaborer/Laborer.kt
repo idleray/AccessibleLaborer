@@ -1,6 +1,7 @@
 package com.rayject.accessiblelaborer
 
 import android.accessibilityservice.AccessibilityService
+import android.text.TextUtils
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -20,7 +21,7 @@ interface Laborer {
     fun handleDelayMillis(): Long
     fun isActive(): Boolean
     fun handleEvent(event: AccessibilityEvent)
-    fun handleEventByType(eventType: Int)
+    fun handleEventByType(eventType: Int, contentChangeType: Int = 0)
 }
 
 abstract class BaseLaborer(override val service: AccessibilityService): Laborer {
@@ -28,7 +29,7 @@ abstract class BaseLaborer(override val service: AccessibilityService): Laborer 
 
     }
 
-    override fun handleEventByType(eventType: Int) {
+    override fun handleEventByType(eventType: Int, contentChangeType: Int) {
     }
 
     override fun handleDelayMillis(): Long {
@@ -67,7 +68,9 @@ fun findNode(node: AccessibilityNodeInfo?, text: String, type: Int): Accessibili
     } else if (type == 1) {
         nodeText = node?.contentDescription?.toString()
     }
-//    Log.d(TAG, "text: $nodeText")
+//    if(!TextUtils.isEmpty(nodeText)) {
+//        logd("in findNode: $nodeText")
+//    }
     if(nodeText?.contains(text) == true) {
         retNode = node
         return retNode

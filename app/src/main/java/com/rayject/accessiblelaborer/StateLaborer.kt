@@ -100,7 +100,6 @@ class State {
 //                it.toInt()
 //            }
 //        }
-    var triggerType = 0 // 0: 不限制次数 1: 仅一次
     var tasks: MutableList<Task> = mutableListOf()
 //    var completedTasks: MutableList<Task> = mutableListOf()
     var completeTask: Task? = null
@@ -213,8 +212,8 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
         return handleDelay
     }
 
-    override fun handleEventByType(eventType: Int) {
-        if(canTrigger(eventType)) {
+    override fun handleEventByType(eventType: Int, contentChangeType: Int) {
+        if(canTrigger(eventType, contentChangeType)) {
             runTask()
         }
     }
@@ -228,11 +227,32 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
         handleEventByType(event.eventType)
     }
 
-    private fun canTrigger(eventType: Int): Boolean {
+    private fun canTrigger(eventType: Int, contentChangeType: Int = 0): Boolean {
         val trigger = currentState?.triggers?.find {
             it.eventType == eventType
         }
-        return trigger != null
+        if(trigger != null) {
+            if(eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+                if(!trigger.hasContentChangeType(contentChangeType)) {
+                    return false
+                }
+            }
+            if(trigger.triggerType == TRIGGER_TYPE_ONE_TIME) {
+                if(trigger.status == TRIGGER_STATUS_VALID) {
+                    //TODO: 需要在state退出或重进时，初始化status为valid
+                    trigger.status = TRIGGER_STATUS_INVALID
+                    return true
+                }
+            } else {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private fun checkContentChangeType(contentChangeType: Int) {
+
     }
 
     private fun runTask() {

@@ -30,49 +30,49 @@ fun buildJdLaborer(service: AccessibilityService):Laborer {
     task.parentLevel = 0
     state.tasks.add(task)
 
-    task = Task()
-    task.name="逛逛好店任务"
-    task.next = "shop"
-    task.timeLimit = true
-    task.limitTextContain = "逛逛好店"
-    task.actionText = "去完成"
-    task.actionDelay = 2000
-    task.action = "click"
-    task.parentLevel = 0
-    state.tasks.add(task)
-
-    task = Task()
-    task.name="参加好玩互动任务"
-    task.next = "shop"
-    task.timeLimit = true
-    task.limitTextContain = "参加好玩互动"
-    task.actionText = "去完成"
-    task.actionDelay = 2000
-    task.action = "click"
-    task.parentLevel = 0
-    state.tasks.add(task)
-
-    task = Task()
-    task.name="逛逛热卖会场任务"
-    task.next = "shop"
-    task.timeLimit = true
-    task.limitTextContain = "逛逛热卖会场"
-    task.actionText = "去完成"
-    task.actionDelay = 2000
-    task.action = "click"
-    task.parentLevel = 0
-    state.tasks.add(task)
-
-    task = Task()
-    task.name="看京东推荐官直播任务"
-    task.next = "shop"
-    task.timeLimit = true
-    task.limitTextContain = "看京东推荐官直播"
-    task.actionText = "去完成"
-    task.actionDelay = 2000
-    task.action = "click"
-    task.parentLevel = 0
-    state.tasks.add(task)
+//    task = Task()
+//    task.name="逛逛好店任务"
+//    task.next = "shop"
+//    task.timeLimit = true
+//    task.limitTextContain = "逛逛好店"
+//    task.actionText = "去完成"
+//    task.actionDelay = 2000
+//    task.action = "click"
+//    task.parentLevel = 0
+//    state.tasks.add(task)
+//
+//    task = Task()
+//    task.name="参加好玩互动任务"
+//    task.next = "shop"
+//    task.timeLimit = true
+//    task.limitTextContain = "参加好玩互动"
+//    task.actionText = "去完成"
+//    task.actionDelay = 2000
+//    task.action = "click"
+//    task.parentLevel = 0
+//    state.tasks.add(task)
+//
+//    task = Task()
+//    task.name="逛逛热卖会场任务"
+//    task.next = "shop"
+//    task.timeLimit = true
+//    task.limitTextContain = "逛逛热卖会场"
+//    task.actionText = "去完成"
+//    task.actionDelay = 2000
+//    task.action = "click"
+//    task.parentLevel = 0
+//    state.tasks.add(task)
+//
+//    task = Task()
+//    task.name="看京东推荐官直播任务"
+//    task.next = "shop"
+//    task.timeLimit = true
+//    task.limitTextContain = "看京东推荐官直播"
+//    task.actionText = "去完成"
+//    task.actionDelay = 2000
+//    task.action = "click"
+//    task.parentLevel = 0
+//    state.tasks.add(task)
 
 
     laborer.states.add(state)

@@ -58,16 +58,14 @@ fun buildJdCwwLaborer(service: AccessibilityService):Laborer {
     state = State()
     state.name = "shops"
     state.triggers = builderTriggers2()
-    //TODO: triggerType与trigger是一对一关系
-    state.triggerType = 1
 
     task = Task()
     task.name="进店并关注"
-    task.next = "browse"
+    task.next = "shop"
     task.timeLimit = true
 //    task.limitTextContain = "关注商品"
     task.actionText = "进店并关注"
-    task.actionDelay = 2000
+    task.actionDelay = 3000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
@@ -79,6 +77,20 @@ fun buildJdCwwLaborer(service: AccessibilityService):Laborer {
     task.action = "back"
     task.actionDelay = 2000
     state.completeTask = task
+
+
+    state = State()
+    state.name = "shop"
+    state.triggers = builderTriggers1()
+
+    task = Task()
+    task.name = "返回任务中心"
+    task.next = "shops"
+    task.action = "back"
+    task.actionDelay = 10000
+    state.completeTask = task
+
+    laborer.states.add(state)
 
     state = State()
     state.name = "browse"
