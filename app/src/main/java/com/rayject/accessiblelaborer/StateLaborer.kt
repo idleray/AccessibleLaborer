@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.text.TextUtils
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import java.lang.Exception
 
 class Task {
     var name =""
@@ -11,6 +12,7 @@ class Task {
 //    var nextWhenComplete = ""
     var timeLimit = false
     var limitTextContain: String? = null
+    var actionSiblingIndex = -1 //相对于limitTextContain文字所在节点的兄弟节点（因为有时候actionText不存在）
 //    var limitTextType = 0
     var actionText: String? = null
 //    var actionTextType = 0
@@ -37,6 +39,7 @@ class Task {
             logd("after ${actionDelay}ms, start to run click")
 //            printCurrentNodes(LaborerManager.service!!)
             var hasRemain = true
+            var limitNode:  AccessibilityNodeInfo? = null
             if(timeLimit && !TextUtils.isEmpty(limitTextContain)) {
                 val node = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, limitTextContain!!)
                 if(node != null) {
@@ -45,12 +48,30 @@ class Task {
                         text = node.contentDescription
                     }
                     hasRemain = hasTaskRemain(text.toString())
+                    limitNode = node
                 }
             }
 
             if(hasRemain) {
 //            printCurrentNodes(LaborerManager.service!!)
-                var actionNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, actionText!!)
+                var actionNode: AccessibilityNodeInfo? = null
+                if(!TextUtils.isEmpty(actionText)) {
+                    actionNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, actionText!!)
+                }
+
+                if(actionNode == null) {
+                    if(actionSiblingIndex != -1 && limitNode != null) {
+                        try {
+                            logd("try find sibling: $actionSiblingIndex")
+                            actionNode = limitNode.parent.getChild(actionSiblingIndex)
+//                            printSources(limitNode.parent, 0)
+//                            logd("actionNode -->")
+//                            printSources(actionNode, 0)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
                 if(actionNode != null) {
                     logd("click $actionText")
                     for( i in 0 until parentLevel ) {
@@ -60,14 +81,14 @@ class Task {
 //                        printSources(actionNode, 0)
 //                    }
                     ret = actionNode?.performAction(AccessibilityNodeInfo.ACTION_CLICK) ?: false
+                    logd("performAction click: $ret")
                 } else {
                     logd("can't find $actionText")
                     //目前在没有数量限制的时候，找不到node，认为已完成
                     //TODO: 需要确定如何才算完成，以及是否需要移除task
-                    if(!timeLimit) {
+                    if (!timeLimit) {
                         completed = true
                     }
-
                 }
             } else {
                 completed = true
@@ -221,7 +242,7 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
     override fun handleEvent(event: AccessibilityEvent) {
 //        when(event.eventType) {
 //            AccessibilityEvent.TYPE_VIEW_CLICKED -> printEvent(service, event)
-//            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> printEvent(service, event)
+////            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> printEvent(service, event)
 //        }
 //        printCurrentNodes(service)
         handleEventByType(event.eventType)

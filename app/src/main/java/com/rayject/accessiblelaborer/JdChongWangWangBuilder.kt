@@ -19,23 +19,24 @@ fun buildJdCwwLaborer(service: AccessibilityService):Laborer {
     state.triggers = builderDefaultTriggers()
 
     var task: Task
-    task = Task()
-    task.name="关注店铺任务"
-    task.next = "shops"
-    task.timeLimit = true
-    task.limitTextContain = "关注店铺"
-    task.actionText = "去关注"
-    task.actionDelay = 2000
-    task.action = "click"
-    task.parentLevel = 1
-    state.tasks.add(task)
+//    task = Task()
+//    task.name="关注店铺任务"
+//    task.next = "shops"
+//    task.timeLimit = true
+//    task.limitTextContain = "关注店铺"
+//    task.actionText = "去关注"
+//    task.actionDelay = 2000
+//    task.action = "click"
+//    task.parentLevel = 1
+//    state.tasks.add(task)
 
     task = Task()
     task.name="关注商品任务"
     task.next = "browse"
     task.timeLimit = true
     task.limitTextContain = "关注商品"
-    task.actionText = "去关注"
+    task.actionSiblingIndex = 3
+//    task.actionText = "去关注"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0

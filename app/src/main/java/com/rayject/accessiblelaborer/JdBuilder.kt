@@ -24,55 +24,60 @@ fun buildJdLaborer(service: AccessibilityService):Laborer {
     task.next = "shop"
     task.timeLimit = true
     task.limitTextContain = "加购精选好物"
-    task.actionText = "去完成"
+    task.actionSiblingIndex = 3
+//    task.actionText = "去完成"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
     state.tasks.add(task)
 
-//    task = Task()
-//    task.name="逛逛好店任务"
-//    task.next = "shop"
-//    task.timeLimit = true
-//    task.limitTextContain = "逛逛好店"
+    task = Task()
+    task.name="逛逛好店任务"
+    task.next = "shop"
+    task.timeLimit = true
+    task.limitTextContain = "逛逛好店"
+    task.actionSiblingIndex = 3
 //    task.actionText = "去完成"
-//    task.actionDelay = 2000
-//    task.action = "click"
-//    task.parentLevel = 0
-//    state.tasks.add(task)
-//
-//    task = Task()
-//    task.name="参加好玩互动任务"
-//    task.next = "shop"
-//    task.timeLimit = true
-//    task.limitTextContain = "参加好玩互动"
+    task.actionDelay = 2000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
+    task = Task()
+    task.name="参加好玩互动任务"
+    task.next = "shop"
+    task.timeLimit = true
+    task.limitTextContain = "参加好玩互动"
+    task.actionSiblingIndex = 3
 //    task.actionText = "去完成"
-//    task.actionDelay = 2000
-//    task.action = "click"
-//    task.parentLevel = 0
-//    state.tasks.add(task)
-//
-//    task = Task()
-//    task.name="逛逛热卖会场任务"
-//    task.next = "shop"
-//    task.timeLimit = true
-//    task.limitTextContain = "逛逛热卖会场"
+    task.actionDelay = 2000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
+    task = Task()
+    task.name="逛逛热卖会场任务"
+    task.next = "shop"
+    task.timeLimit = true
+    task.limitTextContain = "逛逛热卖会场"
+    task.actionSiblingIndex = 3
 //    task.actionText = "去完成"
-//    task.actionDelay = 2000
-//    task.action = "click"
-//    task.parentLevel = 0
-//    state.tasks.add(task)
-//
-//    task = Task()
-//    task.name="看京东推荐官直播任务"
-//    task.next = "shop"
-//    task.timeLimit = true
-//    task.limitTextContain = "看京东推荐官直播"
+    task.actionDelay = 2000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
+
+    task = Task()
+    task.name="看京品推荐官直播任务"
+    task.next = "shop"
+    task.timeLimit = true
+    task.limitTextContain = "看京品推荐官直播"
+    task.actionSiblingIndex = 3
 //    task.actionText = "去完成"
-//    task.actionDelay = 2000
-//    task.action = "click"
-//    task.parentLevel = 0
-//    state.tasks.add(task)
+    task.actionDelay = 2000
+    task.action = "click"
+    task.parentLevel = 0
+    state.tasks.add(task)
 
 
     laborer.states.add(state)
@@ -85,7 +90,7 @@ fun buildJdLaborer(service: AccessibilityService):Laborer {
     task.name = "返回任务中心"
     task.next = "home"
     task.action = "back"
-    task.actionDelay = 1000
+    task.actionDelay = 2000
     state.completeTask = task
 
     laborer.states.add(state)
