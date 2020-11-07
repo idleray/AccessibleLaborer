@@ -40,10 +40,14 @@ class LaborerAccessibilityService: AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if(BuildConfig.DEBUG) {
+            if(event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && event.contentChangeTypes == 0) {
+
+            } else {
 //            printEvent(this, event)
 //            printCurrentNodes(this)
-            logd(AccessibilityEvent.eventTypeToString(event.eventType))
-//            logd("contentChangeTypes: ${event.contentChangeTypes}")
+                logd(AccessibilityEvent.eventTypeToString(event.eventType))
+//                logd("contentChangeTypes: ${event.contentChangeTypes}")
+            }
         }
 
         if(event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {

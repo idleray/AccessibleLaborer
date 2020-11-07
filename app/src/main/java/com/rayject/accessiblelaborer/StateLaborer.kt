@@ -12,14 +12,17 @@ class Task {
 //    var nextWhenComplete = ""
     var timeLimit = false
     var limitTextContain: String? = null
+    var anchorText: String? = null //有时候有多个actionText节点，需要指定一个锚点，以此锚点的父节点开始查找actionText的节点
+    var anchorParentLevel = 0 // anchorText的父节点层级
     var actionSiblingIndex = -1 //相对于limitTextContain文字所在节点的兄弟节点（因为有时候actionText不存在）
 //    var limitTextType = 0
     var actionText: String? = null
 //    var actionTextType = 0
     var action: String? = null
     var actionDelay: Long = 0
-    var parentLevel = 0
+    var parentLevel = 0 //父node的层级，有些点击事件是绑定在父node
     var completed = false
+    var laborer: StateLaborer? = null
 
     fun run(): Boolean {
         logd("--------- run task: ${name}, action = $action")
@@ -56,7 +59,22 @@ class Task {
 //            printCurrentNodes(LaborerManager.service!!)
                 var actionNode: AccessibilityNodeInfo? = null
                 if(!TextUtils.isEmpty(actionText)) {
-                    actionNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, actionText!!)
+                    var searchRootNode: AccessibilityNodeInfo? = null
+                    if(!TextUtils.isEmpty(anchorText)) {
+                        searchRootNode = findNodeByWhatEver(LaborerManager.service?.rootInActiveWindow, anchorText!!)
+//                        printSources(searchRootNode!!, 0)
+                        logd("find anchor node($anchorText): ${searchRootNode != null}")
+                        if(searchRootNode != null) {
+                            for (i in 0 until anchorParentLevel) {
+                                searchRootNode = searchRootNode?.parent
+                            }
+                        }
+                    }
+                    if(searchRootNode == null) {
+                        logd("no anchor, use rootInActiveWindow")
+                        searchRootNode = LaborerManager.service?.rootInActiveWindow
+                    }
+                    actionNode = findNodeByWhatEver(searchRootNode, actionText!!)
                 }
 
                 if(actionNode == null) {
@@ -87,7 +105,10 @@ class Task {
                     //目前在没有数量限制的时候，找不到node，认为已完成
                     //TODO: 需要确定如何才算完成，以及是否需要移除task
                     if (!timeLimit) {
-                        completed = true
+                        val isInLaborerPage = laborer?.isInLaborerPage() ?: false
+                        if(isInLaborerPage) {
+                            completed = true
+                        }
                     }
                 }
             } else {
@@ -221,8 +242,11 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
 
     override fun canHandleCurrentNode(): Boolean {
         val node = service.rootInActiveWindow ?: return false
-//        printCurrentNodes(service)
-        return findNodeByWhatEver(node, text) != null
+        printCurrentNodes(service)
+        val textNode = findNodeByWhatEver(node, text)
+        logd("check $text exist: ${textNode != null}")
+
+        return textNode != null
     }
 
     override fun isActive(): Boolean {
@@ -294,5 +318,22 @@ class StateLaborer(override val service: AccessibilityService): Laborer{
         currentState = states?.find {
             it.name == statName
         }
+    }
+
+    //判断当前页面是不是laborer state的页面
+    //目前用于判断task的timeLimit=false时，此task是否已完结。当停留在错误的页面，即使找不到节点，也不认为结束，可以再次执行task
+    fun isInLaborerPage(): Boolean {
+        var ret = false
+        val node = service.rootInActiveWindow
+        if(node != null) {
+            if(node.packageName == getPackageName() && node.className == getHomeClassName()) {
+                ret = true
+            } else {
+                ret = false
+            }
+        }
+
+        return ret
+
     }
 }

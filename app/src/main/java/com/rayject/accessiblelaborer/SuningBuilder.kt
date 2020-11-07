@@ -24,17 +24,18 @@ fun buildSuningLaborer(service: AccessibilityService):Laborer {
     task.next = "shop"
     task.timeLimit = false
 //    task.limitTextContain = "关注店铺"
-    task.actionText = "+6000"
+    task.actionText = "+100"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
+    task.laborer = laborer
     state.tasks.add(task)
 
     task = Task()
     task.name = "去逛逛的任务"
     task.next = "guangguang"
     task.timeLimit = true
-    task.limitTextContain = "逛腊八主会场"
+    task.limitTextContain = "逛会场"
     task.actionText = "去逛逛"
     task.actionDelay = 2000
     task.action = "click"
@@ -47,8 +48,8 @@ fun buildSuningLaborer(service: AccessibilityService):Laborer {
     task.name = "看榴莲视频的任务"
     task.next = "guangguang"
     task.timeLimit = true
-    task.limitTextContain = "看榴莲视频"
-    task.actionText = "去看看"
+    task.limitTextContain = "看直播"
+    task.actionText = "去看直播"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0

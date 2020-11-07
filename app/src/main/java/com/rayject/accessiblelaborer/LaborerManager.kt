@@ -31,12 +31,13 @@ object LaborerManager {
 //        laborers.add(buildSuningHomeLaborer(service))
 //        laborers.add(buildJdWangLaborer(service))
 //        laborers.add(buildJdQpsLaborer(service))
-//        laborers.add(buildTbLaborer(service))
+        laborers.add(buildTbLaborer(service))
         laborers.add(buildSuningLaborer(service))
-        laborers.add(buildTbLaborer2(service))
+//        laborers.add(buildTbLaborer2(service))
         laborers.add(buildJdLaborer(service))
-        laborers.add(buildJdLaborer2(service))
-        laborers.add(buildJdCwwLaborer(service))
+//        laborers.add(buildJdLaborer2(service))
+//        laborers.add(buildJdCwwLaborer(service))
+        laborers.add(buildWxLaborer(service))
 
     }
 
