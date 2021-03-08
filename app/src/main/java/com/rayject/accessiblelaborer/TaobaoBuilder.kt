@@ -11,7 +11,7 @@ fun buildTbLaborer(service: AccessibilityService):Laborer {
     laborer.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_VIEW_CLICKED// or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
     laborer.initStateName = "home"
     laborer.handleDelay = 7000
-    laborer.text = "超级星秀猫"
+    laborer.text = "金币小镇双12欢乐造红包"
 
     var state: State
     state = State()
@@ -24,7 +24,7 @@ fun buildTbLaborer(service: AccessibilityService):Laborer {
     task.next = "shop"
     task.timeLimit = true
 //    task.limitTextContain = "关注店铺"
-    task.actionText = "去浏览"
+    task.actionText = "去完成"
     task.actionDelay = 2000
     task.action = "click"
     task.parentLevel = 0
