@@ -1,0 +1,6 @@
+1. 有些时候，actiontext的click事件，实际上没有成功，页面的state发生了变化，但页面没有跳转，TYPE_WINDOW_STATE_CHANGED没触发。
+例如下面的log，转换到shopList后就卡住了。这里需要有重试机制
+performAction click: true
+                         D  runClick end. completed: false
+                         D  --------- run task end------
+                         D  transition to: shopList

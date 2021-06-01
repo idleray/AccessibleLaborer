@@ -40,25 +40,25 @@ abstract class BaseLaborer(override val service: AccessibilityService): Laborer 
         return service.rootInActiveWindow.className == getHomeClassName()
     }
 }
-fun findNodeByWhatEver(root: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo? {
-    var node = findNode(root, text, 0)
+fun findNodeByWhatEver(root: AccessibilityNodeInfo?, text: String, fuzzy: Boolean = true): AccessibilityNodeInfo? {
+    var node = findNode(root, text, 0, fuzzy)
     if(node == null) {
-        node = findNode(root, text, 1)
+        node = findNode(root, text, 1, fuzzy)
     }
 
     return node
 }
 
 //findAccessibilityNodeInfosByText找不到，不知道原因
-fun findNodeByText(node: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo?{
-    return findNode(node, text, 0)
+fun findNodeByText(node: AccessibilityNodeInfo?, text: String, fuzzy: Boolean): AccessibilityNodeInfo?{
+    return findNode(node, text, 0, fuzzy)
 }
 
-fun findNodeByContentDescription(node: AccessibilityNodeInfo?, text: String): AccessibilityNodeInfo?{
-    return findNode(node, text, 1)
+fun findNodeByContentDescription(node: AccessibilityNodeInfo?, text: String, fuzzy: Boolean): AccessibilityNodeInfo?{
+    return findNode(node, text, 1, fuzzy)
 }
 
-fun findNode(node: AccessibilityNodeInfo?, text: String, type: Int): AccessibilityNodeInfo?{
+fun findNode(node: AccessibilityNodeInfo?, text: String, type: Int, fuzzy: Boolean): AccessibilityNodeInfo?{
 //    Log.d(TAG, "findNode: $text")
 //        printSources(node!!, 0)
     var retNode: AccessibilityNodeInfo? = null
@@ -71,9 +71,18 @@ fun findNode(node: AccessibilityNodeInfo?, text: String, type: Int): Accessibili
 //    if(!TextUtils.isEmpty(nodeText)) {
 //        logd("in findNode: $nodeText")
 //    }
-    if(nodeText?.contains(text) == true) {
-        retNode = node
-        return retNode
+    if(fuzzy) {
+        //模糊查找
+        if (nodeText?.contains(text) == true) {
+            retNode = node
+            return retNode
+        }
+    } else {
+        //精确查找
+        if (nodeText == text) {
+            retNode = node
+            return retNode
+        }
     }
     if(node?.childCount == 0) {
         return retNode
@@ -81,7 +90,7 @@ fun findNode(node: AccessibilityNodeInfo?, text: String, type: Int): Accessibili
     for(index in 0 until (node?.childCount ?: 0)) {
         val child = node?.getChild(index)
         if(child != null) {
-            val aNode = findNode(child, text, type)
+            val aNode = findNode(child, text, type, fuzzy)
             if(aNode != null) {
                 retNode = aNode
                 break

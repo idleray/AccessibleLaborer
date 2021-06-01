@@ -17,6 +17,7 @@ class Task {
     var actionSiblingIndex = -1 //相对于limitTextContain文字所在节点的兄弟节点（因为有时候actionText不存在）
 //    var limitTextType = 0
     var actionText: String? = null
+    var actionTextFuzzy: Boolean = true // true:模糊查找, false:精确查找
 //    var actionTextType = 0
     var action: String? = null
     var actionDelay: Long = 0
@@ -74,7 +75,8 @@ class Task {
                         logd("no anchor, use rootInActiveWindow")
                         searchRootNode = LaborerManager.service?.rootInActiveWindow
                     }
-                    actionNode = findNodeByWhatEver(searchRootNode, actionText!!)
+//                    printSources(searchRootNode!!, 0)
+                    actionNode = findNodeByWhatEver(searchRootNode, actionText!!, actionTextFuzzy)
                 }
 
                 if(actionNode == null) {

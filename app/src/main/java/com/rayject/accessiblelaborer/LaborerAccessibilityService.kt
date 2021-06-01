@@ -45,7 +45,7 @@ class LaborerAccessibilityService: AccessibilityService() {
             } else {
 //            printEvent(this, event)
 //            printCurrentNodes(this)
-                logd(AccessibilityEvent.eventTypeToString(event.eventType))
+                logd("onAccessibilityEvent --> " + AccessibilityEvent.eventTypeToString(event.eventType))
 //                logd("contentChangeTypes: ${event.contentChangeTypes}")
             }
         }
